@@ -58,8 +58,13 @@ def startRes():
     _setMode("8")
 
 def stopRes():
-    _setMode("9")  
+    _setMode("9")
 
+def primeRes():
+    _setMode("a")
+      
+def revRes():
+    _setMode("b")
 
 
 ########

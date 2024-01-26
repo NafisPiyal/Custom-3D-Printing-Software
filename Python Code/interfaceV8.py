@@ -2,20 +2,21 @@
 import PySimpleGUI as sg
 
 # Requires installation of pyserial: 'pip install pyserial'
-import arduinoV7 as ar
+import arduinoV8 as ar
+import resinV8 as res
 
 # Addresses of button images that are stored locally, if updating the UI to
 # be more aesthetic these could be literally anything. Solely used to represent
 # the functionality that they perform in the GUI
-image_zup = 'button_icons\\white_double_arrow_up.png'
-image_zdn = 'button_icons\\white_double_arrow_down.png'
-image_yup = 'button_icons\\white_arrow_up.png'
-image_ydn = 'button_icons\\white_arrow_down.png'
-image_xlf = 'button_icons\\white_arrow_left.png'
-image_xrt = 'button_icons\\white_arrow_right.png'
-image_tsp = 'button_icons\\transparent.png'
-image_clk = 'button_icons\\clockwise.png'
-image_cclk = 'button_icons\\counterclockwise.png'
+image_zup = 'Python Code/button_icons/white_double_arrow_up.png'
+image_zdn = 'Python Code/button_icons/white_double_arrow_down.png'
+image_yup = 'Python Code/button_icons/white_arrow_up.png'
+image_ydn = 'Python Code/button_icons/white_arrow_down.png'
+image_xlf = 'Python Code/button_icons/white_arrow_left.png'
+image_xrt = 'Python Code/button_icons/white_arrow_right.png'
+image_tsp = 'Python Code/button_icons/transparent.png'
+image_clk = 'Python Code/button_icons/clockwise.png'
+image_cclk = 'Python Code/button_icons/counterclockwise.png'
 
 # Sets icon image size for GUI
 def getImg(x,y):
@@ -49,6 +50,7 @@ def manualConversion(move, dir):
         return round(move * z_step)
     if dir == 'r':
         return round(move * r_step)
+    
 
 # Manual print method for manually controlling stepper motors
 def manualPrint(move, dir, unit):
@@ -94,7 +96,7 @@ def printMenu():
                 [getImg(1.2*x,y),sg.B(image_size=(x,y),image_filename=image_zup,key='z_pos'),getImg(x,y)],
 
                 [getImg(1.2*x,y),sg.B(image_size=(x,y),image_filename=image_yup,key='y_pos'),getImg(x,y),
-                 getImg(1.7*x,y),sg.Slider(range=(0,20),orientation='h')],
+                 getImg(3.2*x,y),sg.Slider(range=(0,20),orientation='h', key='speedVal'), sg.B('Set Speed')],
 
                 [sg.B(image_size=(x,y),image_filename=image_xlf,key='x_neg'),
                  sg.Input(key='-UNITVALUE-',size=(3,5),pad=(0,0)),sg.Combo(list(units),default_value='mm.', size=(4,0), key='-UNITLIST-',pad=(0,0)),
@@ -103,10 +105,12 @@ def printMenu():
 
                 [sg.B(image_size=(x,y),image_filename=image_clk,key='r_neg'),
                  sg.B(image_size=(x,y),image_filename=image_ydn,key='y_neg',pad=11),
-                 sg.B(image_size=(x,y),image_filename=image_cclk,key='r_pos',pad=11)],
+                 sg.B(image_size=(x,y),image_filename=image_cclk,key='r_pos',pad=11),
+                 getImg(2.0*x,y),sg.Slider(range=(1, 100), orientation='h'), sg.B('Set Power')],
                 
 
-                [getImg(1.2*x,y),sg.B(image_size=(x,y),image_filename=image_zdn,key='z_neg'),getImg(x,y)],
+                [getImg(1.2*x,y),sg.B(image_size=(x,y),image_filename=image_zdn,key='z_neg'),getImg(x,y),
+                 getImg(3.2*x,y),sg.B('Start Laser'), sg.B('Stop Laser')],
                 
                 [getImg(x,y)],
 
@@ -130,6 +134,7 @@ def printMenu():
         event, values = window.read()
         if event == sg.WINDOW_CLOSED or event == 'Quit':
             ar.close()
+            res.close()
             break
 
         if event == 'Start/Resume Print':
@@ -154,16 +159,20 @@ def printMenu():
             ar.test()
         
         if event == 'Start Resin':
-            ar.startRes()
+            res.startRes()
 
         if event == 'Stop Resin':
-            ar.stopRes()
+            res.stopRes()
 
-        #if event == 'Prime Resin':
-        #    ar.primeRes()
+        if event == 'Prime Resin':
+            res.primeRes()
 
-        #if event == 'Reverse Resin':
-        #    ar.revRes()   
+        if event == 'Reverse Resin':
+            res.revRes()   
+
+        if event == 'Set Speed':
+            res.setSpeed(int(values['speedVal']))
+            
 
         if event == 'x_pos':
             try:
