@@ -9,6 +9,7 @@
 #include <SPI.h>
 #include <SD.h>
 #include <AccelStepper.h>
+#include <Wire.h>
 
 // Defines four AccelStepper profiles for each motor
 // Change to reflect printer setup (step, dir)
@@ -47,12 +48,12 @@ int RunCount = 0;
 // designed to know if the file has more lines than each array
 // has space I never got around to that and that functionality
 // needs to be added.
-int xCords[500];
-int yCords[500];
-int zCords[500];
-int rCords[500];
-int eCords[500];
-int lCords[500];
+int xCords[300];
+int yCords[300];
+int zCords[300];
+int rCords[300];
+int eCords[300];
+int lCords[300];
 
 void setup() {
   // These speeds can be adjusted and tested for specific machine that
@@ -83,6 +84,7 @@ void setup() {
 
   // Port used for CS by SD card. This can verify depending on installation
   SD.begin(53);
+  Wire.begin();
   // Baud rate NEEDS to match baud rate specified in the GUI
   Serial.begin(9600);
   // Loads data from SD card immediately. Program does not flag bad data
@@ -222,9 +224,15 @@ void manualPrint() {
       //e_stepper.setCurrentPosition(0);
       //e_stepper.moveTo(mnlMv[4]); <<<<<<<<<<<<<<<<<<<<<<<
       //e_stepper.setSpeed(rpm);
+      Wire.beginTransmission(1);
+      Wire.write(mnlMv[4]);
+      Wire.endTransmission();
       //l_stepper.setCurrentPosition(0);
       //l_stepper.moveTo(mnlMv[5]); <<<<<<<<<<<<<<<<<<<<<<<
       //l_stepper.setSpeed(rpm);
+      Wire.beginTransmission(2);
+      Wire.write(mnlMv[5]);
+      Wire.endTransmission();
     }
     else {
       x_stepper.runSpeedToPosition();
