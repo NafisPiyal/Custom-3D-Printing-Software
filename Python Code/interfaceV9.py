@@ -2,20 +2,20 @@
 import PySimpleGUI as sg
 
 # Requires installation of pyserial: 'pip install pyserial'
-import arduinoV7 as ar
+import arduinoV9 as ar
 
 # Addresses of button images that are stored locally, if updating the UI to
 # be more aesthetic these could be literally anything. Solely used to represent
 # the functionality that they perform in the GUI
-image_zup = 'button_icons\\white_double_arrow_up.png'
-image_zdn = 'button_icons\\white_double_arrow_down.png'
-image_yup = 'button_icons\\white_arrow_up.png'
-image_ydn = 'button_icons\\white_arrow_down.png'
-image_xlf = 'button_icons\\white_arrow_left.png'
-image_xrt = 'button_icons\\white_arrow_right.png'
-image_tsp = 'button_icons\\transparent.png'
-image_clk = 'button_icons\\clockwise.png'
-image_cclk = 'button_icons\\counterclockwise.png'
+image_zup = 'Python Code/button_icons/white_double_arrow_up.png'
+image_zdn = 'Python Code/button_icons/white_double_arrow_down.png'
+image_yup = 'Python Code/button_icons/white_arrow_up.png'
+image_ydn = 'Python Code/button_icons/white_arrow_down.png'
+image_xlf = 'Python Code/button_icons/white_arrow_left.png'
+image_xrt = 'Python Code/button_icons/white_arrow_right.png'
+image_tsp = 'Python Code/button_icons/transparent.png'
+image_clk = 'Python Code/button_icons/clockwise.png'
+image_cclk = 'Python Code/button_icons/counterclockwise.png'
 
 # Sets icon image size for GUI
 def getImg(x,y):
@@ -33,11 +33,15 @@ x_conv = 0.0125
 y_conv = 0.0125
 z_conv = 0.0176
 r_conv = 0.0125
+e_conv = 0.0125
+l_conv = 0.0125
 
 x_step = 1/x_conv
 y_step = 1/y_conv
 z_step = 1/z_conv
 r_step = 1/r_conv
+e_step = 1/e_conv
+l_step = 1/l_conv
 
 # Converts MM to steps, rounds to nearest step
 def manualConversion(move, dir):
@@ -56,32 +60,44 @@ def manualPrint(move, dir, unit):
         move = move / 1000
     if dir == "x_pos":
         move = manualConversion(move,'x')
-        ar.write(move,0,0,0)
+        ar.write(move,0,0,0,0,0)
     if dir == "x_neg":
         move = manualConversion(move,'x')
         move = move * -1
-        ar.write(move,0,0,0)
+        ar.write(move,0,0,0,0,0)
     if dir == "y_pos":
         move = manualConversion(move,'y')
-        ar.write(0,move,0,0)
+        ar.write(0,move,0,0,0,0)
     if dir == "y_neg":
         move = manualConversion(move,'y')
         move = move * -1
-        ar.write(0,move,0,0)
+        ar.write(0,move,0,0,0,0)
     if dir == "z_pos":
         move = manualConversion(move,'z')
-        ar.write(0,0,move,0)
+        ar.write(0,0,move,0,0,0)
     if dir == "z_neg":
         move = manualConversion(move,'z')
         move = move * -1
-        ar.write(0,0,move,0)
+        ar.write(0,0,move,0,0,0)
     if dir == "r_pos":
         move = manualConversion(move,'r')
-        ar.write(0,0,0,move)
+        ar.write(0,0,0,move,0,0)
     if dir == "r_neg":
         move = manualConversion(move,'r')
         move = move * -1
-        ar.write(0,0,0,move)
+        ar.write(0,0,0,move,0,0)
+    ################################################################
+    if dir == "e_start":
+        ar.write(0,0,0,0,move,0)
+    if dir == "e_stop":
+        ar.write(0,0,0,0,move,0)
+    if dir == "e_prime":
+        ar.write(0,0,0,0,move,0)
+    if dir == "l_on":
+        ar.write(0,0,0,0,move,0)
+    if dir == "l_off":
+        ar.write(0,0,0,0,move,0)
+
     ar.mnlPrt()
 
 # Starts the menu with an initial print status
@@ -94,7 +110,7 @@ def printMenu():
                 [getImg(1.2*x,y),sg.B(image_size=(x,y),image_filename=image_zup,key='z_pos'),getImg(x,y)],
 
                 [getImg(1.2*x,y),sg.B(image_size=(x,y),image_filename=image_yup,key='y_pos'),getImg(x,y),
-                 getImg(1.7*x,y),sg.Slider(range=(0,20),orientation='h')],
+                 getImg(3.2*x,y),sg.Slider(range=(0,20),orientation='h', key='speedVal'), sg.B('Set Speed')],
 
                 [sg.B(image_size=(x,y),image_filename=image_xlf,key='x_neg'),
                  sg.Input(key='-UNITVALUE-',size=(3,5),pad=(0,0)),sg.Combo(list(units),default_value='mm.', size=(4,0), key='-UNITLIST-',pad=(0,0)),
@@ -103,10 +119,12 @@ def printMenu():
 
                 [sg.B(image_size=(x,y),image_filename=image_clk,key='r_neg'),
                  sg.B(image_size=(x,y),image_filename=image_ydn,key='y_neg',pad=11),
-                 sg.B(image_size=(x,y),image_filename=image_cclk,key='r_pos',pad=11)],
+                 sg.B(image_size=(x,y),image_filename=image_cclk,key='r_pos',pad=11),
+                 getImg(2.0*x,y),sg.Slider(range=(1, 100), orientation='h'), sg.B('Set Power')],
                 
 
-                [getImg(1.2*x,y),sg.B(image_size=(x,y),image_filename=image_zdn,key='z_neg'),getImg(x,y)],
+                [getImg(1.2*x,y),sg.B(image_size=(x,y),image_filename=image_zdn,key='z_neg'),getImg(x,y),
+                 getImg(3.2*x,y),sg.B('Start Laser'), sg.B('Stop Laser')],
                 
                 [getImg(x,y)],
 
@@ -152,18 +170,6 @@ def printMenu():
 
         if event == 'Test':
             ar.test()
-        
-        if event == 'Start Resin':
-            ar.startRes()
-
-        if event == 'Stop Resin':
-            ar.stopRes()
-
-        if event == 'Prime Resin':
-            ar.primeRes()
-
-        if event == 'Reverse Resin':
-            ar.revRes()   
 
         if event == 'x_pos':
             try:

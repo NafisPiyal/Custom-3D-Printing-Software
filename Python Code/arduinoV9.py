@@ -3,7 +3,7 @@ import serial
 
 # Creates a variable called arduino with all the necessary serial information for the specific computer
 # CORRECT THE PORT WHEN USING A DIFFERENT MACHINE AND VERIFY THE BAUDRATE
-arduino = serial.Serial(port='/dev/tty.usbmodem1101', baudrate=9600, timeout=0.1) 
+arduino = serial.Serial(port='COM9', baudrate=9600, timeout=0.1) 
 
 # Mode needs to be set before any coordinates are sent
 # Inner _setMode method is used to send mode whereas specific methods
@@ -19,7 +19,7 @@ def _setMode(mode):
 # the given x, y, z, into a format that the arduino is looking to get
 # coordinates in
 def write(x,y,z,r):
-    msg = str(x)+","+str(y)+","+str(z)+","+str(r)+","
+    msg = str(x)+","+str(y)+","+str(z)+","+str(r)+","+str(e)+","+str(l)+","
     _setMode(msg)
 
 ########
@@ -32,39 +32,27 @@ def write(x,y,z,r):
 # interface program more clear in it's functionality
 
 def startPrt():
-    _setMode("1")
+    _setMode(1)
 
 def pausePrt():
-    _setMode("2")
+    _setMode(2)
 
 def stopPrt():
-    _setMode("3")
+    _setMode(3)
 
 def GoHome():
-    _setMode("4")
+    _setMode(4)
 
 def SetHome():
-    _setMode("5")
+    _setMode(5)
 
 def GetPrintStatus():
-    _setMode("6")
+    _setMode(6)
     temp = arduino.readline().decode('ASCII')
     print(temp)
 
 def mnlPrt():
-    _setMode("7")
-
-def startRes():
-    _setMode("8")
-
-def stopRes():
-    _setMode("9")  
-
-def primeRes():
-    _setMode("10")
-
-def revRes():
-    _setMode("11")
+    _setMode(7)
 
 
 ########
