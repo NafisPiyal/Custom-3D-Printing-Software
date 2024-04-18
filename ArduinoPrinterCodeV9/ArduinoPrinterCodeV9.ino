@@ -30,7 +30,7 @@ int rpm = 500;
 int current_mode = 0;
 int previous_mode = 0;
 bool isDone = false;
-int mnlMv[5] = {0,0,0,0,0,0};
+int mnlMv[6] = {0,0,0,0,0,0};
 int xPos = 0;
 int yPos = 0;
 int zPos = 0;
@@ -224,9 +224,12 @@ void manualPrint() {
       //e_stepper.setCurrentPosition(0);
       //e_stepper.moveTo(mnlMv[4]); <<<<<<<<<<<<<<<<<<<<<<<
       //e_stepper.setSpeed(rpm);
-      Wire.beginTransmission(1);
-      Wire.write(mnlMv[4]);
-      Wire.endTransmission();
+      if (mnlMv[4]!=0){
+        Wire.beginTransmission(1);
+        Wire.write(mnlMv[4]);
+        Wire.endTransmission();
+        mnlMv[4]=0;
+      }
       //l_stepper.setCurrentPosition(0);
       //l_stepper.moveTo(mnlMv[5]); <<<<<<<<<<<<<<<<<<<<<<<
       //l_stepper.setSpeed(rpm);

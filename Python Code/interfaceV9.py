@@ -94,7 +94,7 @@ def manualPrint(move, dir, unit):
     if dir == "e_prime":
         ar.write(0,0,0,0,move,0)
     if dir == "e_rev":
-        ar.write(0,0,0,0,move*-1,0)    
+        ar.write(0,0,0,0,move,0)    
     if dir == "l_on":
         ar.write(0,0,0,0,0,move)
     if dir == "l_off":
@@ -267,17 +267,17 @@ def printMenu():
             manualPrint(move,'e_start',unit)
 
         if event == 'e_stop':
-            move = 0
+            move = 21
             unit = 'mm.'
             manualPrint(move,'e_stop',unit)
 
         if event == 'e_prime':
-            move = 600
+            move = 22
             unit = 'mm.'
             manualPrint(move,'e_prime',unit)
         
         if event == 'e_rev':
-            move = int(values['speedVal'])
+            move = 23
             unit = 'mm.'
             manualPrint(move,'e_rev',unit)
 
