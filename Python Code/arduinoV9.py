@@ -3,7 +3,7 @@ import serial
 
 # Creates a variable called arduino with all the necessary serial information for the specific computer
 # CORRECT THE PORT WHEN USING A DIFFERENT MACHINE AND VERIFY THE BAUDRATE
-arduino = serial.Serial(port=None, baudrate=9600, timeout=0.1) 
+arduino = serial.Serial(port='COM9', baudrate=9600, timeout=0.1) 
 
 # Mode needs to be set before any coordinates are sent
 # Inner _setMode method is used to send mode whereas specific methods
@@ -18,7 +18,7 @@ def _setMode(mode):
 # write is used for manually sending coordinates and works by putting
 # the given x, y, z, into a format that the arduino is looking to get
 # coordinates in
-def write(x,y,z,r,e,l):
+def write(x,y,z,r,e,l1,l2,l3):
     msg = str(x)+","+str(y)+","+str(z)+","+str(r)+","+str(e)+","+str(l1)+","+str(l2)+","+str(l3)+","
     _setMode(msg)
 

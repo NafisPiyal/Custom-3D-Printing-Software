@@ -28,7 +28,7 @@ AccelStepper l3_stepper(AccelStepper::DRIVER, 96, 97);
 
 // Variables for within arduino code
 int arr_pos = 0;
-int rpm = 500;
+int rpm = 200;
 int current_mode = 0;
 int previous_mode = 0;
 bool isDone = false;
@@ -287,7 +287,7 @@ void manualPrint() {
 // Used as the main printing functionality and prints from the file initially loaded
 // grabs the next coordinate whenever the printer finishes the previous movement
 void autoPrint() {
-  if (x_stepper.distanceToGo() == 0 && y_stepper.distanceToGo() == 0 && z_stepper.distanceToGo() == 0 && r_stepper.distanceToGo() == 0 && arr_pos < RunCount || eCords[arr_pos]!=0 || l1Cords[arr_pos]!=0 || l2Cords[arr_pos]!=0) {
+  if (x_stepper.distanceToGo() == 0 && y_stepper.distanceToGo() == 0 && z_stepper.distanceToGo() == 0 && r_stepper.distanceToGo() == 0 && arr_pos < RunCount /*&& eCords[arr_pos]!=-1 && l1Cords[arr_pos]!=-1 && l2Cords[arr_pos]!=-1*/) {
     xPos += xCords[arr_pos];
     yPos += yCords[arr_pos];
     zPos += zCords[arr_pos];
@@ -316,22 +316,19 @@ void autoPrint() {
     }
     if (l1Cords[arr_pos]!=0){
         Wire.beginTransmission(2);
-        Wire.write(l1Cords[arr_pos]);
+        Wire.write(l1Cords[arr_pos]+11);
         Wire.endTransmission();
         l1Cords[arr_pos]=0;
     }
     if (l2Cords[arr_pos]!=0){
         Wire.beginTransmission(2);
-        Wire.write(l2Cords[arr_pos]);
+        Wire.write(l2Cords[arr_pos]+31);
         Wire.endTransmission();
         l2Cords[arr_pos]=0;
     }
-    //e_stepper.setCurrentPosition(0);
-    //e_stepper.moveTo(eCords[arr_pos]);
-    //e_stepper.setSpeed(rpm);
-    //l_stepper.setCurrentPosition(0);
-    //l_stepper.moveTo(lCords[arr_pos]);
-    //l_stepper.setSpeed(rpm);
+
+
+
     arr_pos++;
   }
   else if (arr_pos == RunCount) {

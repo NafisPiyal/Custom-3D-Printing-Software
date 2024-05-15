@@ -290,34 +290,34 @@ def printMenu():
             manualPrint(move,'e_rev',unit)
 
         if event == 'l1_on':
-            move = int(values['l1Val'])
+            move = int(values['l1Val'])+11
             unit = 'mm.'
-            manualPrint(move,'l_on',unit)
+            manualPrint(move,'l1_on',unit)
 
         if event == 'l1_off':
-            move = 11
+            move = 10
             unit = 'mm.'
-            manualPrint(move,'l_off',unit)
+            manualPrint(move,'l1_off',unit)
 
         if event == 'l2_on':
-            move = int(values['l2Val'])+20
+            move = int(values['l2Val'])+31
             unit = 'mm.'
-            manualPrint(move,'l_on',unit)
+            manualPrint(move,'l2_on',unit)
 
         if event == 'l2_off':
-            move = 31
+            move = 30
             unit = 'mm.'
-            manualPrint(move,'l_off',unit)
+            manualPrint(move,'l2_off',unit)
 
         if event == 'l3_on':
-            move = 40
+            move = 51
             unit = 'mm.'
-            manualPrint(move,'l_on',unit)
+            manualPrint(move,'l3_on',unit)
 
         if event == 'l3_off':
-            move = 41
+            move = 50
             unit = 'mm.'
-            manualPrint(move,'l_off',unit)
+            manualPrint(move,'l3_off',unit)
             
         else:
             continue
