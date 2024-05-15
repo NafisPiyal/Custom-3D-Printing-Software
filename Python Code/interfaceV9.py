@@ -60,45 +60,53 @@ def manualPrint(move, dir, unit):
         move = move / 1000
     if dir == "x_pos":
         move = manualConversion(move,'x')
-        ar.write(move,0,0,0,0,0)
+        ar.write(move,0,0,0,0,0,0,0)
     if dir == "x_neg":
         move = manualConversion(move,'x')
         move = move * -1
-        ar.write(move,0,0,0,0,0)
+        ar.write(move,0,0,0,0,0,0,0)
     if dir == "y_pos":
         move = manualConversion(move,'y')
-        ar.write(0,move,0,0,0,0)
+        ar.write(0,move,0,0,0,0,0,0)
     if dir == "y_neg":
         move = manualConversion(move,'y')
         move = move * -1
-        ar.write(0,move,0,0,0,0)
+        ar.write(0,move,0,0,0,0,0,0)
     if dir == "z_pos":
         move = manualConversion(move,'z')
-        ar.write(0,0,move,0,0,0)
+        ar.write(0,0,move,0,0,0,0,0)
     if dir == "z_neg":
         move = manualConversion(move,'z')
         move = move * -1
-        ar.write(0,0,move,0,0,0)
+        ar.write(0,0,move,0,0,0,0,0)
     if dir == "r_pos":
         move = manualConversion(move,'r')
-        ar.write(0,0,0,move,0,0)
+        ar.write(0,0,0,move,0,0,0,0)
     if dir == "r_neg":
         move = manualConversion(move,'r')
         move = move * -1
-        ar.write(0,0,0,move,0,0)
+        ar.write(0,0,0,move,0,0,0,0)
     ################################################################
     if dir == "e_start":
-        ar.write(0,0,0,0,move,0)
+        ar.write(0,0,0,0,move,0,0,0)
     if dir == "e_stop":
-        ar.write(0,0,0,0,move,0)
+        ar.write(0,0,0,0,move,0,0,0)
     if dir == "e_prime":
-        ar.write(0,0,0,0,move,0)
+        ar.write(0,0,0,0,move,0,0,0)
     if dir == "e_rev":
-        ar.write(0,0,0,0,move,0)    
-    if dir == "l_on":
-        ar.write(0,0,0,0,0,move)
-    if dir == "l_off":
-        ar.write(0,0,0,0,0,move)
+        ar.write(0,0,0,0,move,0,0,0)    
+    if dir == "l1_on":
+        ar.write(0,0,0,0,0,move,0,0)
+    if dir == "l1_off":
+        ar.write(0,0,0,0,0,move,0,0)
+    if dir == "l2_on":
+        ar.write(0,0,0,0,0,0,move,0)
+    if dir == "l2_off":
+        ar.write(0,0,0,0,0,0,move,0)
+    if dir == "l3_on":
+        ar.write(0,0,0,0,0,0,0,move)
+    if dir == "l3_off":
+        ar.write(0,0,0,0,0,0,0,move)
 
     ar.mnlPrt()
 
@@ -112,29 +120,29 @@ def printMenu():
                 [getImg(1.2*x,y),sg.B(image_size=(x,y),image_filename=image_zup,key='z_pos'),getImg(x,y)],
 
                 [getImg(1.2*x,y),sg.B(image_size=(x,y),image_filename=image_yup,key='y_pos'),getImg(x,y),
-                 getImg(3.2*x,y),sg.Slider(range=(0,20),orientation='h',key='speedVal'), sg.B('Set Speed')],
+                 getImg(3.2*x,y),sg.Slider(range=(0,20),orientation='h',key='speedVal')],
 
                 [sg.B(image_size=(x,y),image_filename=image_xlf,key='x_neg'),
                  sg.Input(key='-UNITVALUE-',size=(3,5),pad=(0,0)),sg.Combo(list(units),default_value='mm.', size=(4,0), key='-UNITLIST-',pad=(0,0)),
                  sg.B(image_size=(x,y),image_filename=image_xrt,key='x_pos'),
-                 getImg(x,y),sg.B('Start Resin',key='e_start'), sg.B('Stop Resin',key='e_stop'),sg.B('Prime Resin',key='e_prime'), sg.B('Reverse Resin',key='e_rev')],
+                 getImg(x,y),sg.B('Start Resin',key='e_start'), sg.B('Stop Resin',button_color='red',key='e_stop'),sg.B('Prime Resin',key='e_prime'), sg.B('Reverse Resin',key='e_rev')],
 
                 [sg.B(image_size=(x,y),image_filename=image_clk,key='r_neg'),
                  sg.B(image_size=(x,y),image_filename=image_ydn,key='y_neg',pad=11),
                  sg.B(image_size=(x,y),image_filename=image_cclk,key='r_pos',pad=11),
-                 getImg(2.0*x,y),sg.Slider(range=(0, 100), orientation='h',key='powerVal'), sg.B('Set Power')],
+                 getImg(1.0*x,y),sg.Slider(range=(0, 10), orientation='h',key='l1Val',pad=((0,9),(0,18))),sg.B('Start Laser',key='l1_on'), sg.B('Stop Laser',button_color='red',key='l1_off')],
                 
 
                 [getImg(1.2*x,y),sg.B(image_size=(x,y),image_filename=image_zdn,key='z_neg'),getImg(x,y),
-                 getImg(3.2*x,y),sg.B('Start Laser',key='l_on'), sg.B('Stop Laser',key='l_off')],
+                 getImg(1.5*x,y),sg.Slider(range=(0, 10), orientation='h',key='l2Val', pad=((0,9),(0,18))),sg.B('Start Laser',key='l2_on'), sg.B('Stop Laser',button_color='red',key='l2_off')],
                 
-                [getImg(x,y)],
+                [getImg(10.2*x,y),sg.B('Start Laser',key='l3_on'), sg.B('Stop Laser',button_color='red',key='l3_off')],
 
                 [sg.B('Set Home'),sg.B('To Home'),sg.B('Get Status'),sg.B('Test')],
 
-                [sg.B('Start/Resume Print'), sg.B('Pause Print'), sg.B('Stop Print'), sg.B('Quit')]
+                [sg.B('Start/Resume Print'), sg.B('Pause Print'), sg.B('Stop Print',button_color='red'), sg.B('Quit')]
                 
-                 ]
+                ]
 
     # Create the window 
     window = sg.Window('Printer Interface', menu)
@@ -281,13 +289,33 @@ def printMenu():
             unit = 'mm.'
             manualPrint(move,'e_rev',unit)
 
-        if event == 'l_on':
-            move = int(values['powerVal'])
+        if event == 'l1_on':
+            move = int(values['l1Val'])
             unit = 'mm.'
             manualPrint(move,'l_on',unit)
 
-        if event == 'l_off':
-            move = 0
+        if event == 'l1_off':
+            move = 11
+            unit = 'mm.'
+            manualPrint(move,'l_off',unit)
+
+        if event == 'l2_on':
+            move = int(values['l2Val'])+20
+            unit = 'mm.'
+            manualPrint(move,'l_on',unit)
+
+        if event == 'l2_off':
+            move = 31
+            unit = 'mm.'
+            manualPrint(move,'l_off',unit)
+
+        if event == 'l3_on':
+            move = 40
+            unit = 'mm.'
+            manualPrint(move,'l_on',unit)
+
+        if event == 'l3_off':
+            move = 41
             unit = 'mm.'
             manualPrint(move,'l_off',unit)
             
