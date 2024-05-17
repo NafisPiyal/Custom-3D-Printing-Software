@@ -1,11 +1,9 @@
 #include <Wire.h>
-int freq = 100;
-int cycleTime = 1000/freq;
 
 int x;
-#define laser2 9
-#define laser1 8
-#define laser3 10
+#define laser1 9
+#define laser2 10
+#define laser3 11
 
 void setup() {
   Wire.begin(2);                // join i2c bus with address #2
@@ -51,53 +49,25 @@ void loop() {
 }
 
 void laser3on() {
-
+  analogWrite(laser3, 255);
 } 
 
 void laser3off() {
-
+  analogWrite(laser3, 0);
 }
 
 void laser2on() {
-  int dutycycle2=(x-31)*10;
-  onTime2=cycleTime*dutycycle2/100;
-  offtime2=cycleTime-onTime;
-  
-
-  }
-
+  analogWrite(laser2, (x-31)*25.5);
 }
 
 void laser2off() {
-
+  analogWrite(laser2, 0);
 }
 
 void laser1on() {
-
+  analogWrite(laser1, (x-11)*25.5);
 }
 
 void laser1off() {
-
+  analogWrite(laser1, 0);
 }
-
-void startResin() {
-  stepper.setSpeed(x*calcSpeed);// Set the initial speed
-  stepper.runSpeed();  // Start the motor
-}
-
-void stopResin() {
-  stepper.setSpeed(0);
-  stepper.stop();  // Stop the motor
-}
-
-void primeResin() {
-  stepper.setSpeed(6000);  // Set the speed for priming
-  stepper.runSpeed();  // Start the motor for priming
-}
-
-void reverseResin() {
-  stepper.setSpeed(-6000);  // Set the speed for reversing
-  stepper.runSpeed();  // Start the motor for reversing
-}
-
-

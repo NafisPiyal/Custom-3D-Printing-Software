@@ -53,14 +53,14 @@ int RunCount = 0;
 // designed to know if the file has more lines than each array
 // has space I never got around to that and that functionality
 // needs to be added.
-int xCords[250];
-int yCords[250];
-int zCords[250];
-int rCords[250];
-int eCords[250];
-int l1Cords[250];
-int l2Cords[250];
-int l3Cords[250];
+int xCords[400];
+int yCords[400];
+int zCords[400];
+int rCords[400];
+int eCords[400];
+int l1Cords[400];
+int l2Cords[400];
+int l3Cords[400];
 
 void setup() {
   // These speeds can be adjusted and tested for specific machine that
