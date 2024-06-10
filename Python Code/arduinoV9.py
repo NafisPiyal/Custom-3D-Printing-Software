@@ -18,8 +18,8 @@ def _setMode(mode):
 # write is used for manually sending coordinates and works by putting
 # the given x, y, z, into a format that the arduino is looking to get
 # coordinates in
-def write(x,y,z,r,e,l):
-    msg = str(x)+","+str(y)+","+str(z)+","+str(r)+","+str(e)+","+str(l)+","
+def write(x,y,z,r,e,l1,l2,l3):
+    msg = str(x)+","+str(y)+","+str(z)+","+str(r)+","+str(e)+","+str(l1)+","+str(l2)+","+str(l3)+","
     _setMode(msg)
 
 ########

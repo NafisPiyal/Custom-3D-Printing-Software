@@ -22,21 +22,26 @@ AccelStepper y_stepper(AccelStepper::DRIVER, 31, 30);
 AccelStepper z_stepper(AccelStepper::DRIVER, 33, 32);
 AccelStepper r_stepper(AccelStepper::DRIVER, 36, 34);
 AccelStepper e_stepper(AccelStepper::DRIVER, 90, 91);
-AccelStepper l_stepper(AccelStepper::DRIVER, 92, 93);
+AccelStepper l1_stepper(AccelStepper::DRIVER, 92, 93);
+AccelStepper l2_stepper(AccelStepper::DRIVER, 94, 95);
+AccelStepper l3_stepper(AccelStepper::DRIVER, 96, 97);
 
 // Variables for within arduino code
 int arr_pos = 0;
-int rpm = 500;
+int rpm = 200;
 int current_mode = 0;
 int previous_mode = 0;
 bool isDone = false;
-int mnlMv[6] = {0,0,0,0,0,0};
+int mnlMv[8] = {0,0,0,0,0,0,0,0};
 int xPos = 0;
 int yPos = 0;
 int zPos = 0;
 int rPos = 0;
 int ePos = 0;
-int lPos = 0;
+int l1Pos = 0;
+int l2Pos = 0;
+int l3Pos = 0;
+
 
 // Variables used with the SD card, cords
 //  Variables are accessed throughout the program
@@ -48,12 +53,14 @@ int RunCount = 0;
 // designed to know if the file has more lines than each array
 // has space I never got around to that and that functionality
 // needs to be added.
-int xCords[300];
-int yCords[300];
-int zCords[300];
-int rCords[300];
-int eCords[300];
-int lCords[300];
+int xCords[400];
+int yCords[400];
+int zCords[400];
+int rCords[400];
+int eCords[400];
+int l1Cords[400];
+int l2Cords[400];
+int l3Cords[400];
 
 void setup() {
   // These speeds can be adjusted and tested for specific machine that
@@ -78,9 +85,17 @@ void setup() {
   e_stepper.setSpeed(rpm);
   e_stepper.setAcceleration(1000);
 
-  l_stepper.setMaxSpeed(2000);
-  l_stepper.setSpeed(rpm);
-  l_stepper.setAcceleration(1000);
+  l1_stepper.setMaxSpeed(2000);
+  l1_stepper.setSpeed(rpm);
+  l1_stepper.setAcceleration(1000);
+
+  l2_stepper.setMaxSpeed(2000);
+  l2_stepper.setSpeed(rpm);
+  l2_stepper.setAcceleration(1000);
+
+  l3_stepper.setMaxSpeed(2000);
+  l3_stepper.setSpeed(rpm);
+  l3_stepper.setAcceleration(1000);
 
   // Port used for CS by SD card. This can verify depending on installation
   SD.begin(53);
@@ -199,16 +214,40 @@ void loop() {
 // but the way I designed it, it should work. Although why would you.
 void manualPrint() {
   while (true) {
-    if (mnlMv[0]+mnlMv[1]+mnlMv[2]+mnlMv[3]+mnlMv[4]+mnlMv[5] == 0) {
+    if (mnlMv[0]+mnlMv[1]+mnlMv[2]+mnlMv[3]+mnlMv[4]+mnlMv[5]+mnlMv[6]+mnlMv[7] == 0) {
       break;
     }
-    if (x_stepper.distanceToGo() == 0 && y_stepper.distanceToGo() == 0 && z_stepper.distanceToGo() == 0 && r_stepper.distanceToGo() == 0 && e_stepper.distanceToGo() == 0 && l_stepper.distanceToGo() == 0) {
+    if (mnlMv[4]!=0){
+        Wire.beginTransmission(1);
+        Wire.write(mnlMv[4]);
+        Wire.endTransmission();
+        mnlMv[4]=0;
+    }
+    if (mnlMv[5]!=0){
+        Wire.beginTransmission(2);
+        Wire.write(mnlMv[5]);
+        Wire.endTransmission();
+        mnlMv[5]=0;
+    }
+    if (mnlMv[6]!=0){
+        Wire.beginTransmission(2);
+        Wire.write(mnlMv[6]);
+        Wire.endTransmission();
+        mnlMv[6]=0;
+    }
+    if (mnlMv[7]!=0){
+        Wire.beginTransmission(2);
+        Wire.write(mnlMv[7]);
+        Wire.endTransmission();
+        mnlMv[7]=0;
+    }
+    if (x_stepper.distanceToGo() == 0 && y_stepper.distanceToGo() == 0 && z_stepper.distanceToGo() == 0 && r_stepper.distanceToGo() == 0) {
       xPos += mnlMv[0];
       yPos += mnlMv[1];
       zPos += mnlMv[2];
       rPos += mnlMv[3];
-      ePos += mnlMv[4];
-      lPos += mnlMv[5];
+      //ePos += mnlMv[4];
+      //lPos += mnlMv[5];
       x_stepper.setCurrentPosition(0);
       x_stepper.moveTo(mnlMv[0]);
       x_stepper.setSpeed(rpm);
@@ -221,30 +260,15 @@ void manualPrint() {
       r_stepper.setCurrentPosition(0);
       r_stepper.moveTo(mnlMv[3]);
       r_stepper.setSpeed(rpm);
-      //e_stepper.setCurrentPosition(0);
-      //e_stepper.moveTo(mnlMv[4]); <<<<<<<<<<<<<<<<<<<<<<<
-      //e_stepper.setSpeed(rpm);
-      if (mnlMv[4]!=0){
-        Wire.beginTransmission(1);
-        Wire.write(mnlMv[4]);
-        Wire.endTransmission();
-        mnlMv[4]=0;
-      }
-      //l_stepper.setCurrentPosition(0);
-      //l_stepper.moveTo(mnlMv[5]); <<<<<<<<<<<<<<<<<<<<<<<
-      //l_stepper.setSpeed(rpm);
-      Wire.beginTransmission(2);
-      Wire.write(mnlMv[5]);
-      Wire.endTransmission();
     }
     else {
       x_stepper.runSpeedToPosition();
       y_stepper.runSpeedToPosition();
       z_stepper.runSpeedToPosition();
       r_stepper.runSpeedToPosition();
-      e_stepper.runSpeedToPosition();
-      l_stepper.runSpeedToPosition();
-      if (x_stepper.distanceToGo() == 0 && y_stepper.distanceToGo() == 0 && z_stepper.distanceToGo() == 0 && r_stepper.distanceToGo() == 0 && e_stepper.distanceToGo() == 0 && l_stepper.distanceToGo() == 0) {
+      //e_stepper.runSpeedToPosition();
+      //l_stepper.runSpeedToPosition();
+      if (x_stepper.distanceToGo() == 0 && y_stepper.distanceToGo() == 0 && z_stepper.distanceToGo() == 0 && r_stepper.distanceToGo() == 0) {
         break;
       }
     }
@@ -256,18 +280,22 @@ void manualPrint() {
   mnlMv[3] = 0;
   mnlMv[4] = 0;
   mnlMv[5] = 0;
+  mnlMv[6] = 0;
+  mnlMv[7] = 0;
 }
 
 // Used as the main printing functionality and prints from the file initially loaded
 // grabs the next coordinate whenever the printer finishes the previous movement
 void autoPrint() {
-  if (x_stepper.distanceToGo() == 0 && y_stepper.distanceToGo() == 0 && z_stepper.distanceToGo() == 0 && r_stepper.distanceToGo() == 0 && e_stepper.distanceToGo() == 0 && l_stepper.distanceToGo() == 0 && arr_pos < RunCount) {
+  if (x_stepper.distanceToGo() == 0 && y_stepper.distanceToGo() == 0 && z_stepper.distanceToGo() == 0 && r_stepper.distanceToGo() == 0 && arr_pos < RunCount /*&& eCords[arr_pos]!=-1 && l1Cords[arr_pos]!=-1 && l2Cords[arr_pos]!=-1*/) {
     xPos += xCords[arr_pos];
     yPos += yCords[arr_pos];
     zPos += zCords[arr_pos];
     rPos += rCords[arr_pos];
-    ePos += eCords[arr_pos];
-    lPos += lCords[arr_pos];
+    //ePos += eCords[arr_pos];
+    //l1Pos += l1Cords[arr_pos];
+    //l2Pos += l2Cords[arr_pos];
+    //l3Pos += l3Cords[arr_pos];
     x_stepper.setCurrentPosition(0);
     x_stepper.moveTo(xCords[arr_pos]);
     x_stepper.setSpeed(rpm);
@@ -280,12 +308,27 @@ void autoPrint() {
     r_stepper.setCurrentPosition(0);
     r_stepper.moveTo(rCords[arr_pos]);
     r_stepper.setSpeed(rpm);
-    e_stepper.setCurrentPosition(0);
-    e_stepper.moveTo(eCords[arr_pos]);
-    e_stepper.setSpeed(rpm);
-    l_stepper.setCurrentPosition(0);
-    l_stepper.moveTo(lCords[arr_pos]);
-    l_stepper.setSpeed(rpm);
+    if (eCords[arr_pos]!=0){
+        Wire.beginTransmission(1);
+        Wire.write(eCords[arr_pos]);
+        Wire.endTransmission();
+        eCords[arr_pos]=0;
+    }
+    if (l1Cords[arr_pos]!=0){
+        Wire.beginTransmission(2);
+        Wire.write(l1Cords[arr_pos]+11);
+        Wire.endTransmission();
+        l1Cords[arr_pos]=0;
+    }
+    if (l2Cords[arr_pos]!=0){
+        Wire.beginTransmission(2);
+        Wire.write(l2Cords[arr_pos]+31);
+        Wire.endTransmission();
+        l2Cords[arr_pos]=0;
+    }
+
+
+
     arr_pos++;
   }
   else if (arr_pos == RunCount) {
@@ -296,8 +339,8 @@ void autoPrint() {
     y_stepper.runSpeedToPosition();
     z_stepper.runSpeedToPosition();
     r_stepper.runSpeedToPosition();
-    e_stepper.runSpeedToPosition();
-    l_stepper.runSpeedToPosition();
+    //e_stepper.runSpeedToPosition();
+    //l_stepper.runSpeedToPosition();
   }
 }
 
@@ -335,7 +378,9 @@ void GetCords() {
     bool z = true;
     bool r = true;
     bool e = true;
-    bool l = true;
+    bool l1 = true;
+    bool l2 = true;
+    //bool l3 = true;
     tempInt = "";
     tempVal = "";
     tempChar = 'a';
@@ -380,12 +425,24 @@ void GetCords() {
         tempInt = "";
         e = false;
       }
-      else if (tempChar == ',' && l) {
+      else if (tempChar == ',' && l1) {
         tempIntVal = tempInt.toInt();
-        lCords[i] = tempIntVal;
+        l1Cords[i] = tempIntVal;
         tempInt = "";
-        l = false;
+        l1 = false;
       }
+      else if (tempChar == ',' && l2) {
+        tempIntVal = tempInt.toInt();
+        l2Cords[i] = tempIntVal;
+        tempInt = "";
+        l2 = false;
+      }
+      /* else if (tempChar == ',' && l3) {
+        tempIntVal = tempInt.toInt();
+        l3Cords[i] = tempIntVal;
+        tempInt = "";
+        l3 = false;
+      } */
       else {
         tempInt += tempChar;
       }
@@ -454,7 +511,9 @@ void prcsData() {
         bool z = true;
         bool r = true;
         bool e = true;
-        bool l = true;
+        bool l1 = true;
+        bool l2 = true;
+        bool l3 = true;
         if (strlen(receivedChars) > 1) {
           for (int j = 0; j < strlen(receivedChars); j++) {
             tempChar = receivedChars[j];
@@ -488,11 +547,23 @@ void prcsData() {
               tempInt = "";
               e = false;
             }
-            else if (tempChar == ',' && l) {
+            else if (tempChar == ',' && l1) {
               tempIntVal = tempInt.toInt();
               mnlMv[5] = tempIntVal;
               tempInt = "";
-              l = false;
+              l1 = false;
+            }
+            else if (tempChar == ',' && l2) {
+              tempIntVal = tempInt.toInt();
+              mnlMv[6] = tempIntVal;
+              tempInt = "";
+              l2 = false;
+            }
+            else if (tempChar == ',' && l3) {
+              tempIntVal = tempInt.toInt();
+              mnlMv[7] = tempIntVal;
+              tempInt = "";
+              l3 = false;
             }
             else {
               tempInt += tempChar;
