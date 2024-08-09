@@ -21,10 +21,6 @@ AccelStepper x_stepper(AccelStepper::DRIVER, 29, 28);
 AccelStepper y_stepper(AccelStepper::DRIVER, 31, 30);
 AccelStepper z_stepper(AccelStepper::DRIVER, 33, 32);
 AccelStepper r_stepper(AccelStepper::DRIVER, 36, 34);
-AccelStepper e_stepper(AccelStepper::DRIVER, 90, 91);
-AccelStepper l1_stepper(AccelStepper::DRIVER, 92, 93);
-AccelStepper l2_stepper(AccelStepper::DRIVER, 94, 95);
-AccelStepper l3_stepper(AccelStepper::DRIVER, 96, 97);
 
 // Variables for within arduino code
 int arr_pos = 0;
@@ -41,6 +37,9 @@ int ePos = 0;
 int l1Pos = 0;
 int l2Pos = 0;
 int l3Pos = 0;
+int xyFactor = 40;
+int zFactor = 400;
+float rFactor = 35.5555555555555;
 
 
 // Variables used with the SD card, cords
@@ -81,21 +80,6 @@ void setup() {
   r_stepper.setSpeed(rpm);
   r_stepper.setAcceleration(1000);
 
-  e_stepper.setMaxSpeed(2000);
-  e_stepper.setSpeed(rpm);
-  e_stepper.setAcceleration(1000);
-
-  l1_stepper.setMaxSpeed(2000);
-  l1_stepper.setSpeed(rpm);
-  l1_stepper.setAcceleration(1000);
-
-  l2_stepper.setMaxSpeed(2000);
-  l2_stepper.setSpeed(rpm);
-  l2_stepper.setAcceleration(1000);
-
-  l3_stepper.setMaxSpeed(2000);
-  l3_stepper.setSpeed(rpm);
-  l3_stepper.setAcceleration(1000);
 
   // Port used for CS by SD card. This can verify depending on installation
   SD.begin(53);
@@ -297,16 +281,16 @@ void autoPrint() {
     //l2Pos += l2Cords[arr_pos];
     //l3Pos += l3Cords[arr_pos];
     x_stepper.setCurrentPosition(0);
-    x_stepper.moveTo(xCords[arr_pos]);
+    x_stepper.moveTo(xCords[arr_pos]*xyFactor);
     x_stepper.setSpeed(rpm);
     y_stepper.setCurrentPosition(0);
-    y_stepper.moveTo(yCords[arr_pos]);
+    y_stepper.moveTo(yCords[arr_pos]*xyFactor);
     y_stepper.setSpeed(rpm);
     z_stepper.setCurrentPosition(0);
-    z_stepper.moveTo(zCords[arr_pos]);
+    z_stepper.moveTo(zCords[arr_pos]*zFactor);
     z_stepper.setSpeed(rpm);
     r_stepper.setCurrentPosition(0);
-    r_stepper.moveTo(rCords[arr_pos]);
+    r_stepper.moveTo(rCords[arr_pos]*rFactor);
     r_stepper.setSpeed(rpm);
     if (eCords[arr_pos]!=0){
         Wire.beginTransmission(1);

@@ -2,7 +2,7 @@
 #include <Wire.h>
 
 AccelStepper stepper(AccelStepper::DRIVER, 4, 3);
-int calcSpeed = 300;
+int calcSpeed = 3;
 int x;
 
 void setup() {

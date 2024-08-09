@@ -12,6 +12,9 @@ void setup() {
   pinMode(laser1, OUTPUT);
   pinMode(laser2, OUTPUT);
   pinMode(laser3, OUTPUT);
+  digitalWrite(laser1, LOW);
+  digitalWrite(laser2, LOW);
+  digitalWrite(laser3, LOW);
 }
 
 void receiveEvent(int howMany)
@@ -30,7 +33,7 @@ void loop() {
   {
     laser3off();
   }
-  else if(x>=31 && x<=41)
+  else if(x>=31 && x<=40)
   {
     laser2on();
   }
@@ -38,7 +41,7 @@ void loop() {
   {
     laser2off();
   }
-  else if(x>=11 && x<=21)
+  else if(x>=11 && x<=20)
   {
     laser1on();
   }
@@ -49,7 +52,7 @@ void loop() {
 }
 
 void laser3on() {
-  analogWrite(laser3, 255);
+  analogWrite(laser3, 10);
 } 
 
 void laser3off() {
@@ -57,7 +60,7 @@ void laser3off() {
 }
 
 void laser2on() {
-  analogWrite(laser2, (x-31)*25.5);
+  analogWrite(laser2, (x-30)*25.5);
 }
 
 void laser2off() {
@@ -65,7 +68,7 @@ void laser2off() {
 }
 
 void laser1on() {
-  analogWrite(laser1, (x-11)*25.5);
+  analogWrite(laser1, (x-10)*25.5);
 }
 
 void laser1off() {

@@ -31,7 +31,7 @@ units = {'μm.','mm.'}
 # for the printer to run on. These values are required in the coordinate gen UI
 x_conv = 0.0125
 y_conv = 0.0125
-z_conv = 0.0176
+z_conv = 0.0025
 r_conv = 0.0125
 e_conv = 0.0125
 l_conv = 0.0125
