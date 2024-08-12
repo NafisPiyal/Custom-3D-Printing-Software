@@ -40,6 +40,8 @@ int l3Pos = 0;
 int xyFactor = 40;
 int zFactor = 400;
 float rFactor = 35.5555555555555;
+int currentBatch = 0;
+int currentBatchSize = 0;
 
 
 // Variables used with the SD card, cords
@@ -115,7 +117,8 @@ void loop() {
       previous_mode = current_mode;
       arr_pos = 0;
       isDone = false;
-      //Pause Print
+      currentBatch = 0;  // Reset the batch count
+      GetCords();  // Reload the first batch of coordinates
       current_mode = 2;
     }
     //Go Home
@@ -272,6 +275,17 @@ void manualPrint() {
 // grabs the next coordinate whenever the printer finishes the previous movement
 void autoPrint() {
   if (x_stepper.distanceToGo() == 0 && y_stepper.distanceToGo() == 0 && z_stepper.distanceToGo() == 0 && r_stepper.distanceToGo() == 0 && arr_pos < RunCount /*&& eCords[arr_pos]!=-1 && l1Cords[arr_pos]!=-1 && l2Cords[arr_pos]!=-1*/) {
+    if (arr_pos >= currentBatchSize) {
+      if (currentBatch * 400 < RunCount) {
+        // We have more lines to process
+        GetCords();
+        arr_pos = 0;
+      } else {
+        isDone = true;
+        return;
+      }
+    }
+    
     xPos += xCords[arr_pos];
     yPos += yCords[arr_pos];
     zPos += zCords[arr_pos];
@@ -336,6 +350,7 @@ void autoPrint() {
 void GetSize() {
   myFile = SD.open("output.txt");
   char tempChar;
+  RunCount = 0;
   while (myFile.available()) {
     tempChar = char(myFile.read());
     if (tempChar == '\n') {
@@ -356,7 +371,22 @@ void GetCords() {
   int tempIntVal;
   String tempVal;
   String tempInt;
-  for (int i = 0; i < RunCount; i++) {
+
+  for (int i = 0; i < currentBatch * 400; i++) {
+    myFile.readStringUntil('\n');
+  }
+  
+  // Calculate the size of the current batch
+  // This ensures we process up to 400 lines at a time, but no more than the remaining lines in the file
+  // For example, if RunCount is 1250:
+  // - First batch:  min(400, 1250 - (0 * 400)) = 400
+  // - Second batch: min(400, 1250 - (1 * 400)) = 400
+  // - Third batch:  min(400, 1250 - (2 * 400)) = 400
+  // - Fourth batch: min(400, 1250 - (3 * 400)) = 50
+  // This ensures we don't try to read more lines than are left in the file for the final batch
+  currentBatchSize = min(400, RunCount - (currentBatch * 400));
+  
+  for (int i = 0; i < currentBatchSize; i++) {
     bool x = true;
     bool y = true;
     bool z = true;
@@ -432,6 +462,9 @@ void GetCords() {
       }
     }
   }
+
+  myFile.close();
+  currentBatch++;
 }
 
 //////
