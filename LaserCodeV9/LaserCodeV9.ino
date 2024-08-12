@@ -33,7 +33,7 @@ void loop() {
   {
     laser3off();
   }
-  else if(x>=31 && x<=40)
+  else if(x>=31 && x<=41)
   {
     laser2on();
   }
@@ -41,7 +41,7 @@ void loop() {
   {
     laser2off();
   }
-  else if(x>=11 && x<=20)
+  else if(x>=11 && x<=21)
   {
     laser1on();
   }
@@ -60,7 +60,7 @@ void laser3off() {
 }
 
 void laser2on() {
-  analogWrite(laser2, (x-30)*25.5);
+  analogWrite(laser2, (x-31)*25.5);
 }
 
 void laser2off() {
@@ -68,7 +68,7 @@ void laser2off() {
 }
 
 void laser1on() {
-  analogWrite(laser1, (x-10)*25.5);
+  analogWrite(laser1, (x-11)*25.5);
 }
 
 void laser1off() {
