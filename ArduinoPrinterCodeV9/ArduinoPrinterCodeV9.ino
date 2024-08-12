@@ -42,6 +42,7 @@ int zFactor = 400;
 float rFactor = 35.5555555555555;
 int currentBatch = 0;
 int currentBatchSize = 0;
+int arraySize = 400;
 
 
 // Variables used with the SD card, cords
@@ -54,14 +55,14 @@ int RunCount = 0;
 // designed to know if the file has more lines than each array
 // has space I never got around to that and that functionality
 // needs to be added.
-int xCords[400];
-int yCords[400];
-int zCords[400];
-int rCords[400];
-int eCords[400];
-int l1Cords[400];
-int l2Cords[400];
-int l3Cords[400];
+int xCords[arraySize];
+int yCords[arraySize];
+int zCords[arraySize];
+int rCords[arraySize];
+int eCords[arraySize];
+int l1Cords[arraySize];
+int l2Cords[arraySize];
+int l3Cords[arraySize];
 
 void setup() {
   // These speeds can be adjusted and tested for specific machine that
@@ -276,7 +277,7 @@ void manualPrint() {
 void autoPrint() {
   if (x_stepper.distanceToGo() == 0 && y_stepper.distanceToGo() == 0 && z_stepper.distanceToGo() == 0 && r_stepper.distanceToGo() == 0 && arr_pos < RunCount /*&& eCords[arr_pos]!=-1 && l1Cords[arr_pos]!=-1 && l2Cords[arr_pos]!=-1*/) {
     if (arr_pos >= currentBatchSize) {
-      if (currentBatch * 400 < RunCount) {
+      if (currentBatch * arraySize < RunCount) {
         // We have more lines to process
         GetCords();
         arr_pos = 0;
@@ -372,7 +373,7 @@ void GetCords() {
   String tempVal;
   String tempInt;
 
-  for (int i = 0; i < currentBatch * 400; i++) {
+  for (int i = 0; i < currentBatch * arraySize; i++) {
     myFile.readStringUntil('\n');
   }
   
@@ -384,7 +385,7 @@ void GetCords() {
   // - Third batch:  min(400, 1250 - (2 * 400)) = 400
   // - Fourth batch: min(400, 1250 - (3 * 400)) = 50
   // This ensures we don't try to read more lines than are left in the file for the final batch
-  currentBatchSize = min(400, RunCount - (currentBatch * 400));
+  currentBatchSize = min(arraySize, RunCount - (currentBatch * arraySize));
   
   for (int i = 0; i < currentBatchSize; i++) {
     bool x = true;
